@@ -65,6 +65,11 @@ const WindowTagger = new Lang.Class({
         this.windowMap = new WindowMap();
     },
 
+    focus: function(key) {
+        let window = this.windowMap.window(key);
+        Main.activateWindow(window);
+    },
+
     destroy: function() { }
 });
 
