@@ -37,6 +37,14 @@ const WindowMap = new Lang.Class ({
         return this.rv.Success;
     },
 
+    window: function(key) {
+        return this.keyToWindowMap[key] || null;
+    },
+
+    key: function(window) {
+        return this.windowToKeyMap[window] || null;
+    },
+
     remove_window: function(window) {
         let key = this.windowToKeyMap[window];
         delete this.windowToKeyMap[window];
