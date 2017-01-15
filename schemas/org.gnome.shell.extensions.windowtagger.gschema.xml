@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+    <schema id="org.gnome.shell.extensions.windowtagger" path="/org/gnome/shell/extensions/windowtagger/">
+        <key type="as" name="start-tag">
+            <default><![CDATA[['<Super>o']]]></default>
+            <summary>Global key combination to start tagging.</summary>
+        </key>
+    </schema>
+</schemalist>
