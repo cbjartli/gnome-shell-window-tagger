@@ -20,8 +20,15 @@ const WindowTagger = new Lang.Class({
             Convenience.getSettings(),
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL,
-            () => { log("RECEIVED") }
+            Lang.bind(this, this._showUI)
         );
+    },
+
+    _showUI: function() {
+        Main.notify("Debug: showing UI");
+    },
+
+    _hideUI: function() {
     },
 
     destroy: function() { 
