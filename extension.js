@@ -34,23 +34,22 @@ const WindowTaggerView = new Lang.Class({
     },
 
     show: function() {
-        if (this._hidden) {
-            this._hidden = false;
-            let panel = Main.layoutManager.panelBox;
-            let mt = Main.layoutManager.primaryMonitor;
+        if (!this._hidden) return;
+        this._hidden = false;
 
-            Main.uiGroup.add_actor(this._entry);
+        let panel = Main.layoutManager.panelBox;
+        let mt = Main.layoutManager.primaryMonitor;
 
-            this._entry.set_position(mt.x + mt.width - this._entry.width, mt.y + panel.height);
-            global.stage.set_key_focus(this._entry);
-        }
+        Main.uiGroup.add_actor(this._entry);
+
+        this._entry.set_position(mt.x + mt.width - this._entry.width, mt.y + panel.height);
+        global.stage.set_key_focus(this._entry);
     },
 
     hide: function() {
-        if (!this._hidden) {
-            this._hidden = true;
-            Main.uiGroup.remove_actor(this._entry);
-        }
+        if (this._hidden) return;
+        this._hidden = true;
+        Main.uiGroup.remove_actor(this._entry);
     },
 
     destroy: function () {
@@ -70,7 +69,7 @@ const WindowTaggerController = new Lang.Class({
             Convenience.getSettings(),
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL,
-            Lang.bind(view, view.show)
+            () => view.show()
         );
 
         view.getEntry().connect('key-release-event', (o, e) => { 
@@ -78,7 +77,7 @@ const WindowTaggerController = new Lang.Class({
             const shift = (e.get_state() & Clutter.ModifierType.SHIFT_MASK) !== 0;
             const sym = e.get_key_symbol();
 
-            if (sym === Clutter.KEY_Escape) {
+            if (sym === Clutter.KEY_Escape || sym === Clutter.KEY_Return) {
                 view.hide();
             }
         });
