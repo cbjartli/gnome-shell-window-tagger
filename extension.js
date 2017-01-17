@@ -24,21 +24,33 @@ const WindowTaggerView = new Lang.Class({
     Name: 'WindowTaggerView',
 
     _createEntry: function() {
+        let pm = Main.layoutManager.primaryMonitor;
         let entry = new St.Entry({style_class: 'text-label'});
+        entry.set_width(Math.floor(pm.width / 6));
         return entry;
     },
 
-    _createContainer: function(entry) {
+    _createBoxLayout: function(entry) {
+        let boxLayout = new St.BoxLayout({style_class: 'box-layout'});
+        boxLayout.set_vertical(true);
+        boxLayout.insert_child_at_index(entry, 0);
+        return boxLayout;
+    },
+
+    _createContainer: function(boxLayout) {
+        let pm = Main.layoutManager.primaryMonitor;
         let container = new St.Bin({reactive: true});
+        container.set_width(Math.floor(pm.width / 6));
         container.set_alignment(St.Align.MIDDLE, St.Align.START);
-        container.add_actor(entry);
+        container.add_actor(boxLayout);
         return container;
     },
 
     _init: function() { 
         this._hidden = true;
         this._entry = this._createEntry();
-        this._container = this._createContainer(this._entry);
+        this._boxLayout = this._createBoxLayout(this._entry);
+        this._container = this._createContainer(this._boxLayout);
     },
 
     getEntry: function() {
