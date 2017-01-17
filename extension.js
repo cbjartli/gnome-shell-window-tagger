@@ -24,8 +24,7 @@ const WindowTaggerView = new Lang.Class({
     Name: 'WindowTaggerView',
 
     _createEntry: function() {
-        let entry = new St.Entry({style_class: 'text-label', text: "Some text"});
-        entry.opacity = 255;
+        let entry = new St.Entry({style_class: 'text-label'});
         return entry;
     },
 
@@ -66,6 +65,10 @@ const WindowTaggerView = new Lang.Class({
         Main.uiGroup.remove_actor(this._container);
     },
 
+    reset: function() {
+        this._entry.set_text("");
+    },
+
     destroy: function () {
         this.hide()
     }
@@ -92,6 +95,7 @@ const WindowTaggerController = new Lang.Class({
             const sym = e.get_key_symbol();
 
             if (sym === Clutter.KEY_Escape || sym === Clutter.KEY_Return) {
+                view.reset();
                 view.hide();
             }
         });
