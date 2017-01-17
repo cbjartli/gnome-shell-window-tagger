@@ -23,33 +23,47 @@ const WindowTaggerModel = new Lang.Class({
 const WindowTaggerView = new Lang.Class({
     Name: 'WindowTaggerView',
 
+    _createEntry: function() {
+        let entry = new St.Entry({style_class: 'text-label', text: "Some text"});
+        entry.opacity = 255;
+        return entry;
+    },
+
+    _createContainer: function(entry) {
+        let container = new St.Bin({reactive: true});
+        container.set_alignment(St.Align.MIDDLE, St.Align.START);
+        container.add_actor(entry);
+        return container;
+    },
+
     _init: function() { 
         this._hidden = true;
-        this._entry = new St.Entry({style_class: 'text-label', text: "Some text"});
-        this._entry.opacity = 255;
+        this._entry = this._createEntry();
+        this._container = this._createContainer(this._entry);
     },
 
     getEntry: function() {
         return this._entry;
     },
 
+    getContainer: function() {
+        return this._container;
+    },
+
     show: function() {
         if (!this._hidden) return;
         this._hidden = false;
-
         let panel = Main.layoutManager.panelBox;
         let mt = Main.layoutManager.primaryMonitor;
-
-        Main.uiGroup.add_actor(this._entry);
-
-        this._entry.set_position(mt.x + mt.width - this._entry.width, mt.y + panel.height);
+        Main.uiGroup.add_actor(this._container);
+        this._container.set_position(mt.x + mt.width - this._container.width, mt.y + panel.height);
         global.stage.set_key_focus(this._entry);
     },
 
     hide: function() {
         if (this._hidden) return;
         this._hidden = true;
-        Main.uiGroup.remove_actor(this._entry);
+        Main.uiGroup.remove_actor(this._container);
     },
 
     destroy: function () {
