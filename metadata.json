@@ -1,7 +1,7 @@
 {
     "shell-version": ["3.22"], 
     "description": "Tag windows to easily move between them", 
-    "uuid": "windowtagger@cbjartli.github.com", 
+    "uuid": "window-tagger@cbjartli.github.com", 
     "name": "Window Tagger",
     "settings-schema": "org.gnome.shell.extensions.windowtagger"
 }
