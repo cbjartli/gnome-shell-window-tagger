@@ -15,7 +15,56 @@ var windowTagger;
 const WindowTaggerModel = new Lang.Class({
     Name: 'WindowTaggerModel',
 
-    _init: function() {},
+    _init: function() {
+        this._windowMap = {};
+        this._tagMap = {};
+    },
+
+    getTag: function(window) {
+        if (!(window in this._tagMap)) {
+            return "";
+        }
+
+        return this._tagMap[window];
+    },
+
+    getWindow: function(tag) {
+        if (!(tag in this._windowMap)) {
+            return null;
+        }
+
+        return this._windowMap[tag];
+    },
+
+    deleteTag: function(tag) {
+        if (tag in this._windowMap) {
+            let window = this._windowMap[tag];
+            delete this._windowMap[tag];
+            delete this._tagMap[window];
+        }
+    },
+
+    deleteWindow: function(window) {
+        if (window in this._tagMap) {
+            let tag = this._tagMap[window];
+            delete this._tagMap[window];
+            delete this._windowMap[tag];
+        }
+    },
+
+    tagWindow: function(window, tag) {
+        this.deleteTag(tag);
+        this.deleteWindow(window);
+        this._windowMap[tag] = window;
+        this._tagMap[window] = tag;
+    },
+
+    tagActiveWindow: function(tag) {
+        let window = global.display.get_focus_window();
+        if (window) {
+            this.tagWindow(window, tag);
+        }
+    },
 
     destroy: function() {}
 });
@@ -55,6 +104,10 @@ const WindowTaggerView = new Lang.Class({
 
     getEntry: function() {
         return this._entry;
+    },
+
+    getEntryText: function() {
+        return this._entry.get_text();
     },
 
     getContainer: function() {
@@ -98,23 +151,31 @@ const WindowTaggerController = new Lang.Class({
             Convenience.getSettings(),
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL,
-            () => view.show()
+            () => {view.show();
+        // TODO: remove
+        model.tagActiveWindow("test");
+            }
         );
 
-        view.getEntry().connect('key-release-event', (o, e) => { 
+        this._keyReleaseHander = view.getEntry().connect('key-release-event', (o, e) => { 
             const ctrl = (e.get_state() & Clutter.ModifierType.CONTROL_MASK) !== 0;
             const shift = (e.get_state() & Clutter.ModifierType.SHIFT_MASK) !== 0;
             const sym = e.get_key_symbol();
 
             if (sym === Clutter.KEY_Escape || sym === Clutter.KEY_Return) {
-                view.reset();
-                view.hide();
+                let win = this._model.getWindow("test");
+                if (win) { Main.activateWindow(win); }
+                this._view.reset();
+                this._view.hide();
             }
         });
+
+        
     },
 
     destroy: function() {
         Main.wm.removeKeybinding('start-tag');
+        this._view.getEntry().disconnect(this._keyReleaseHander);
     }
 });
 
