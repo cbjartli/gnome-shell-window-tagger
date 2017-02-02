@@ -1,10 +1,30 @@
-.text-label {
+.entry {
     font-size: 16px;
     font-weight: bold;
     color: #ffffff;
     background-color: rgba(10,10,10,0.7);
     border-radius: 5px;
     border-color: rgba(10,10,10,0.7);
+    padding: .5em;
+}
+
+.entry:edit {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: rgba(92,184,92,0.7);
+    border-radius: 5px;
+    border-color: rgba(92,184,92,0.7);
+    padding: .5em;
+}
+
+.entry:error {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: rgba(217,83,79,0.7);
+    border-radius: 5px;
+    border-color: rgba(217,83,79,0.7);
     padding: .5em;
 }
 

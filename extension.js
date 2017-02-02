@@ -74,13 +74,14 @@ const WindowTaggerView = new Lang.Class({
 
     _createEntry: function() {
         let pm = Main.layoutManager.primaryMonitor;
-        let entry = new St.Entry({style_class: 'text-label'});
+        let entry = new St.Entry({style_class: 'entry'});
+        //entry.add_style_pseudo_class("edit");
         entry.set_width(Math.floor(pm.width / 6));
         return entry;
     },
 
     _createBoxLayout: function(entry) {
-        let boxLayout = new St.BoxLayout({style_class: 'box-layout'});
+        let boxLayout = new St.BoxLayout({});
         boxLayout.set_vertical(true);
         boxLayout.insert_child_at_index(entry, 0);
         return boxLayout;
@@ -114,6 +115,14 @@ const WindowTaggerView = new Lang.Class({
         return this._container;
     },
 
+    setEditMode: function() {
+        this._entry.pseudo_class = "edit";
+    },
+
+    setNormalMode: function() {
+        this._entry.pseudo_class = "";
+    },
+
     show: function() {
         if (!this._hidden) return;
         this._hidden = false;
@@ -131,6 +140,7 @@ const WindowTaggerView = new Lang.Class({
     },
 
     reset: function() {
+        this.setNormalMode();
         this._entry.set_text("");
     },
 
@@ -161,9 +171,14 @@ const WindowTaggerController = new Lang.Class({
             const ctrl = (e.get_state() & Clutter.ModifierType.CONTROL_MASK) !== 0;
             const shift = (e.get_state() & Clutter.ModifierType.SHIFT_MASK) !== 0;
             const sym = e.get_key_symbol();
+            const KP_RETURN = 65421;
 
-            if (sym === Clutter.KEY_Escape || sym === Clutter.KEY_Return) {
-                let win = this._model.getWindow("test");
+            if (sym === Clutter.KEY_Escape) {
+                this._view.setEditMode();
+            }
+
+            if (sym === Clutter.KEY_Return || sym === KP_RETURN) {
+                let win = this._model.getWindow(this._view.getEntryText());
                 if (win) { Main.activateWindow(win); }
                 this._view.reset();
                 this._view.hide();
